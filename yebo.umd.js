@@ -1729,7 +1729,7 @@ var _recBuildParams = function _recBuildParams(prefix, value, top, acc) {
  */
 var buildCreateCart = function buildCreateCart(token, number, last, create, userToken) {
   // Build the request.
-  return buildRequest('POST', '/cart/' + number, { token: token, last: last, create: create, user_token: userToken });
+  return buildRequest('POST', '/cart', { number: number, token: token, last: last, create: create, user_token: userToken });
 };
 
 /**
@@ -1756,7 +1756,7 @@ var createCart = function createCart(token, number, last, create, userToken) {
  */
 var buildGetCartItems = function buildGetCartItems(token, number, last, create, userToken) {
   // Build the request.
-  return buildRequest('GET', '/cart_items/' + number, { token: token, last: last, create: create, user_token: userToken });
+  return buildRequest('GET', '/cart/items', { number: number, token: token, last: last, create: create, user_token: userToken });
 };
 
 /**
@@ -1778,6 +1778,16 @@ var getCartItems = function getCartItems(token, number, last, create, userToken)
 
 /**
  * Remove all items from the cart
+ * Same params as `addCartItems`
+ * @return {Object} Request
+ */
+var buildEmptyCartItems = function buildEmptyCartItems(token, number, last, create, userToken) {
+  // Build the request.
+  return buildRequest('POST', '/cart/items/empty', { number: number, token: token, last: last, create: create, user_token: userToken });
+};
+
+/**
+ * Remove all items from the cart
  * @param {String} token Token Order
  * @param {String} number Number (reference) of the Order
  * @param {Boolean} last If an order is not found, search for the last not complete
@@ -1787,10 +1797,10 @@ var getCartItems = function getCartItems(token, number, last, create, userToken)
  */
 var emptyCartItems = function emptyCartItems(token, number, last, create, userToken) {
   // Build the request.
-  return buildRequest('POST', '/cart_items/' + number, { token: token, last: last, create: create, user_token: userToken });
+  var req = buildEmptyCartItems(token, number, last, create, userToken);
 
   // Return the execution
-  // return executeRequest(req);
+  return executeRequest(req);
 };
 
 /**
@@ -1800,7 +1810,7 @@ var emptyCartItems = function emptyCartItems(token, number, last, create, userTo
  */
 var buildAddCartItems = function buildAddCartItems(token, number, last, create, userToken, variant, qty) {
   // Build the request.
-  return buildRequest('POST', '/cart_items/' + number, { token: token, last: last, create: create, user_token: userToken, variant: variant, qty: qty });
+  return buildRequest('POST', '/cart/items/add', { number: number, token: token, last: last, create: create, user_token: userToken, variant: variant, qty: qty });
 };
 
 /**
@@ -1824,6 +1834,16 @@ var addCartItems = function addCartItems(token, number, last, create, userToken,
 
 /**
  * Returns all items cart
+ * Same params as `removeCartItems`
+ * @return {Object} Request
+ */
+var buildRemoveCartItems = function buildRemoveCartItems(token, number, last, create, userToken, variant, qty) {
+  // Build the request.
+  return buildRequest('POST', '/cart/items/remove', { token: token, last: last, create: create, user_token: userToken, variant: variant, qty: qty });
+};
+
+/**
+ * Returns all items cart
  * @param {String} token Token Order
  * @param {String} number Number (reference) of the Order
  * @param {Boolean} last If an order is not found, search for the last not complete
@@ -1835,10 +1855,10 @@ var addCartItems = function addCartItems(token, number, last, create, userToken,
  */
 var removeCartItems = function removeCartItems(token, number, last, create, userToken, variant, qty) {
   // Build the request.
-  return buildRequest('POST', '/cart_items/' + number, { token: token, last: last, create: create, user_token: userToken, variant: variant, qty: qty });
+  var req = buildRemoveCartItems(token, number, last, create, userToken, variant, qty);
 
   // Return the execution
-  // return executeRequest(req);
+  return executeRequest(req);
 };
 
 /**
@@ -1849,7 +1869,7 @@ var removeCartItems = function removeCartItems(token, number, last, create, user
  */
 var buildUpdateCartItems = function buildUpdateCartItems(token, number, last, create, userToken, lineItem, qty) {
   // Build the request.
-  return buildRequest('POST', '/cart_items/' + number, { token: token, last: last, create: create, user_token: userToken, lineItem: lineItem, qty: qty });
+  return buildRequest('POST', '/cart/items/update', { token: token, last: last, create: create, user_token: userToken, lineItem: lineItem, qty: qty });
 };
 
 /**
@@ -2334,7 +2354,7 @@ var getTaxonomyId = function getTaxonomyId() {
  */
 var buildRegisterUser = function buildRegisterUser(email, password, passwordConfirmation) {
   // Build the request.
-  return buildRequest('POST', '/user', { email: email, password: password, password_confirmation: passwordConfirmation });
+  return buildRequest('POST', '/users', { user: { email: email, password: password, password_confirmation: passwordConfirmation } });
 };
 
 /**
@@ -2349,7 +2369,7 @@ var registerUser = function registerUser(email, password, passwordConfirmation) 
   var req = buildRegisterUser(email, password, passwordConfirmation);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest(req);
 };
 
 /**
@@ -2359,7 +2379,7 @@ var registerUser = function registerUser(email, password, passwordConfirmation) 
  */
 var buildLoginUser = function buildLoginUser(email, password) {
   // Build the request.
-  return buildRequest('POST', '/user/login', { email: email, password: password });
+  return buildRequest('POST', '/users/login', { user: email, password: password });
 };
 
 /**
@@ -2373,7 +2393,7 @@ var loginUser = function loginUser(email, password) {
   var req = buildLoginUser(email, password);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest(req);
 };
 
 /**
@@ -2383,7 +2403,7 @@ var loginUser = function loginUser(email, password) {
  */
 var buildRequireResetUser = function buildRequireResetUser(email, storeUrl) {
   // Build the request.
-  return buildRequest('POST', '/user/reset', { email: email, store_url: storeUrl });
+  return buildRequest('POST', '/users/reset', { email: email, store_url: storeUrl });
 };
 
 /**
@@ -2397,7 +2417,7 @@ var requireResetUser = function requireResetUser(email, storeUrl) {
   var req = buildRequireResetUser(email, storeUrl);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest(req);
 };
 
 /**
@@ -2407,7 +2427,7 @@ var requireResetUser = function requireResetUser(email, storeUrl) {
  */
 var buildResetUser = function buildResetUser(token, email, password, passwordConfirmation) {
   // Build the request.
-  return buildRequest('POST', '/user/reset/reset', { token: token, email: email, password: password, password_confirmation: passwordConfirmation });
+  return buildRequest('POST', '/users/reset/reset', { token: token, email: email, password: password, password_confirmation: passwordConfirmation });
 };
 
 /**
@@ -2423,7 +2443,7 @@ var resetUser = function resetUser(token, email, password, passwordConfirmation)
   var req = buildResetUser(token, email, password, passwordConfirmation);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest(req);
 };
 
 // SDK version
@@ -2443,9 +2463,11 @@ exports.buildCreateCart = buildCreateCart;
 exports.createCart = createCart;
 exports.buildGetCartItems = buildGetCartItems;
 exports.getCartItems = getCartItems;
+exports.buildEmptyCartItems = buildEmptyCartItems;
 exports.emptyCartItems = emptyCartItems;
 exports.buildAddCartItems = buildAddCartItems;
 exports.addCartItems = addCartItems;
+exports.buildRemoveCartItems = buildRemoveCartItems;
 exports.removeCartItems = removeCartItems;
 exports.buildUpdateCartItems = buildUpdateCartItems;
 exports.updateCartItems = updateCartItems;
