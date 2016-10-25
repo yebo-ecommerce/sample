@@ -1,0 +1,11 @@
+version: '2'
+services:
+  web:
+    image: python:alpine
+    ports:
+      - 81:80
+    working_dir: /app
+    command: python3 -m http.server 80
+    volumes:
+      - ./:/app
+
