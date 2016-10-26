@@ -10,19 +10,42 @@ const state = {
   orderToken: null,
   orderNumber: null,
   userToken: null,
-  // orderNumber: "R368402021",
-  // orderToken: "FL5vgmk4EwJ_el2b-iGFOQ",
-  // userToken: "fcbb4866e5a77d00a7a2e060e651a99009168068be7b1b28"
+  authToken: null
 }
 
 // ===============
 // ===============
+const setState = (newState) => {
+  if (newState.order != undefined) {
+    state.orderToken = newState.order.token
+    state.orderNumber = newState.order.number
+  } else {
+    state.userToken = newState.user.token
+  }
+  return state
+}
+
 const addCartEvent = (el) => {
   const variantId = el.currentTarget.getAttribute("variantId")
 
-  yebo.addCartItems(state.orderToken, state.orderNumber, false, true, state.userToken, variantId, 1).then(res => {
-    state.orderToken = res.order.token
-    state.orderNumber = res.order.number
+  yebo.addCartItems(state.orderToken, state.orderNumber, false, true, state.userToken, variantId, 1)
+    .then(setState)
+    .then(getAuthToken)
+    .then(listPayments)
+}
+
+const getAuthToken = (state) => {
+  return yebo.executeRequest(yebo.buildAuthentication()).then(res => {
+    state.authToken = res.token
+    yebo.set('auth', state.authToken)
+    return state
+  })
+}
+
+const listPayments = (state) => {
+  debugger
+  yebo.getOrderPayments(state.orderNumber, state.userToken, false).then(res => {
+    debugger
   })
 }
 
@@ -53,31 +76,7 @@ yebo.getProducts({})
   .then(prods => prods.map(createElement(mainDiv)))
 
 
-const getUser = (el) => {
-  const user = document.getElementById('user').value
-  const password = document.getElementById('password').value
-  yebo.loginUser(user, password).then(res => {
-    state.userToken = res.user.token
-    const orderNumber = res.user.order.number
-    if (orderNumber != null) {
-      state.orderNumber = orderNumber
-    }
-    alert(user + ' Logado')
-  }).catch(res => {
-    yebo.registerUser(user, password, password).then(res => {
-      state.userToken = res.user.token
-      const orderNumber = res.user.order.number
-      if (orderNumber != null) {
-        state.orderNumber = orderNumber
-      }
-      alert(user + ' Criado com a senha ' + password)
-    }).catch((res, err) => {
-      alert("Usuario já existe")
-    })
-  })
-}
+yebo.loginUser("teste@teste.com", "123123").then(setState)
 
-window.addEventListener('DOMContentLoaded', function() {
-  const container = document.getElementById('createUser')
-  container.addEventListener('click', getUser)
-})
+// window.addEventListener('DOMContentLoaded', function() {
+// })

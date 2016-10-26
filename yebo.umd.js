@@ -1629,7 +1629,8 @@ var exists = function exists(name) {
  * @param {String} token The API token
  * @return {Object} Base configuration for the request
  */
-var buildRequest = function buildRequest(method, path, data, auth) {
+var buildRequest = function buildRequest(method, path, data) {
+  var auth = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : get$1('auth');
   var name = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : get$1('store');
   var version = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : get$1('version');
   var token = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : get$1('token');
@@ -1687,7 +1688,7 @@ var buildParams = function buildParams(value) {
  * @param {Object} req Generated request
  * @return {Promise} The HTTP request Promise
  */
-var executeRequest = function executeRequest(req) {
+var executeRequest$1 = function executeRequest(req) {
   return fetch(req.method, req.url, req.data, req.contentType, req.headers);
 };
 
@@ -1746,7 +1747,7 @@ var createCart = function createCart(token, number, last, create, userToken) {
   var req = buildCreateCart(token, number, last, create, userToken);
 
   // // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1773,7 +1774,7 @@ var getCartItems = function getCartItems(token, number, last, create, userToken)
   var req = buildGetCartItems(token, number, last, create, userToken);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1800,7 +1801,7 @@ var emptyCartItems = function emptyCartItems(token, number, last, create, userTo
   var req = buildEmptyCartItems(token, number, last, create, userToken);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1829,7 +1830,7 @@ var addCartItems = function addCartItems(token, number, last, create, userToken,
   var req = buildAddCartItems(token, number, last, create, userToken, variant, qty);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1858,7 +1859,7 @@ var removeCartItems = function removeCartItems(token, number, last, create, user
   var req = buildRemoveCartItems(token, number, last, create, userToken, variant, qty);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1888,7 +1889,7 @@ var updateCartItems = function updateCartItems(token, number, last, create, user
   var req = buildUpdateCartItems(token, number, last, create, userToken, lineItem, qty);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 // Dependencies
@@ -1899,7 +1900,7 @@ var updateCartItems = function updateCartItems(token, number, last, create, user
  */
 var buildGetOrderAddress = function buildGetOrderAddress(number, userToken, kind) {
   // Build the request.
-  return buildRequest('GET', '/address/' + number + '/' + kind, { user_token: userToken });
+  return buildRequest('GET', '/checkout/address/' + number + '/' + kind, { user_token: userToken });
 };
 
 /**
@@ -1914,7 +1915,7 @@ var getOrderAddress = function getOrderAddress(number, userToken, kind) {
   var req = buildGetOrderAddress(number, userToken, kind);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1924,7 +1925,7 @@ var getOrderAddress = function getOrderAddress(number, userToken, kind) {
  */
 var buildCreateOrderAddress = function buildCreateOrderAddress(number, userToken, kind) {
   // Build the request.
-  return buildRequest('POST', '/address/' + number + '/' + kind, { user_token: userToken });
+  return buildRequest('POST', '/checkout/address/' + number + '/' + kind, { user_token: userToken });
 };
 
 /**
@@ -1939,7 +1940,7 @@ var createOrderAddress = function createOrderAddress(number, userToken, kind) {
   var req = buildCreateOrderAddress(number, userToken, kind);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1949,7 +1950,7 @@ var createOrderAddress = function createOrderAddress(number, userToken, kind) {
  */
 var buildRemoveOrderAddress = function buildRemoveOrderAddress(number, userToken, kind) {
   // Build the request.
-  return buildRequest('POST', '/address/' + number + '/' + kind, { user_token: userToken });
+  return buildRequest('POST', '/checkout/address/' + number + '/' + kind, { user_token: userToken });
 };
 
 /**
@@ -1964,7 +1965,7 @@ var removeOrderAddress = function removeOrderAddress(number, userToken, kind) {
   var req = buildRemoveAddress(number, userToken, kind);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1974,7 +1975,7 @@ var removeOrderAddress = function removeOrderAddress(number, userToken, kind) {
  */
 var buildUpdateOrderAddress = function buildUpdateOrderAddress(number, userToken, kind) {
   // Build the request.
-  return buildRequest('POST', '/address/' + number + '/' + kind, { user_token: userToken });
+  return buildRequest('POST', '/checkout/address/' + number + '/' + kind, { user_token: userToken });
 };
 
 /**
@@ -1989,7 +1990,7 @@ var updateOrderAddress = function updateOrderAddress(number, userToken, kind) {
   var req = buildUpdateOrderAddress(number, userToken, kind);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -1999,7 +2000,7 @@ var updateOrderAddress = function updateOrderAddress(number, userToken, kind) {
  */
 var buildGetOrderShipments = function buildGetOrderShipments(number, userToken, calculate) {
   // Build the request.
-  return buildRequest('POST', '/shipments/' + number + '/' + kind, { user_token: userToken, calculate: calculate });
+  return buildRequest('POST', '/checkout/shipments/' + number + '/' + kind, { user_token: userToken, calculate: calculate });
 };
 
 /**
@@ -2014,7 +2015,7 @@ var getOrderShipments = function getOrderShipments(number, userToken, calculate)
   var req = buildGetOrderShipments(number, userToken, calculate);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2024,7 +2025,7 @@ var getOrderShipments = function getOrderShipments(number, userToken, calculate)
  */
 var buildSetOrderShipment = function buildSetOrderShipment(number, userToken, pkg, rate) {
   // Build the request.
-  return buildRequest('POST', '/shipments/' + number + '/' + kind, { user_token: userToken, rate: rate, package: pkg });
+  return buildRequest('POST', '/checkout/shipments/' + number + '/' + kind, { user_token: userToken, rate: rate, package: pkg });
 };
 
 /**
@@ -2040,7 +2041,7 @@ var setOrderShipment = function setOrderShipment(number, userToken, pkg, rate) {
   var req = buildSetOrderShipment(number, userToken, pkg, rate);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2050,7 +2051,7 @@ var setOrderShipment = function setOrderShipment(number, userToken, pkg, rate) {
  */
 var buildGetOrderPayments = function buildGetOrderPayments(number, userToken, subscription) {
   // Build the request.
-  return buildRequest('GET', '/pay/' + number, { user_token: userToken, subscription: subscription });
+  return buildRequest('GET', '/checkout/' + number + '/payments', { user_token: userToken, subscription: subscription });
 };
 
 /**
@@ -2065,7 +2066,7 @@ var getOrderPayments = function getOrderPayments(number, userToken, subscription
   var req = buildGetOrderPayments(number, userToken, subscription);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2075,7 +2076,7 @@ var getOrderPayments = function getOrderPayments(number, userToken, subscription
  */
 var buildOrderPay = function buildOrderPay(number, userToken, methodId, source) {
   // Build the request.
-  return buildRequest('POST', '/pay/' + number, { user_token: userToken, method_id: methodId, source: source });
+  return buildRequest('POST', '/checkout/' + number + '/payments', { user_token: userToken, method_id: methodId, source: source });
 };
 
 /**
@@ -2091,7 +2092,7 @@ var orderPay = function orderPay(number, userToken, methodId, source) {
   var req = buildOrderPay(number, userToken, methodId, source);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 // Dependencies
@@ -2126,7 +2127,7 @@ var getOrders = function getOrders(token, complete, incomplete) {
   var req = buildGetOrder(token, complete, incomplete, page, perPage);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest(req);
 };
 
 /**
@@ -2161,7 +2162,7 @@ var getOrderNumber = function getOrderNumber(token, number) {
   var req = buildGetOrderNumber(token, number, complete, incomplete);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest(req);
 };
 
 // Dependencies
@@ -2185,7 +2186,7 @@ var getProducts = function getProducts(search) {
   var req = buildGetProducts(search);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2212,7 +2213,7 @@ var getProductsAggs = function getProductsAggs(root, ranges, search) {
   var req = buildGetProductsAggs(root, ranges, search);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2235,7 +2236,7 @@ var getProductsId = function getProductsId(id) {
   var req = buildGetProductsId(id);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 // Dependencies
@@ -2269,7 +2270,7 @@ var getTaxons = function getTaxons(ids, taxons, taxonomyId) {
   var req = buildGetTaxons(ids, taxons, taxonomyId, page, perPage);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2291,7 +2292,7 @@ var getTaxonId = function getTaxonId() {
   var req = buildGetTaxonId();
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2321,7 +2322,7 @@ var getTaxonomies = function getTaxonomies() {
   var req = buildGetTaxonomies(page, perPage);
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2343,7 +2344,7 @@ var getTaxonomyId = function getTaxonomyId() {
   var req = buildGetTaxonomyId();
 
   // Return the execution
-  return excuteRequest(req);
+  return executeRequest$1(req);
 };
 
 // Dependencies
@@ -2369,7 +2370,7 @@ var registerUser = function registerUser(email, password, passwordConfirmation) 
   var req = buildRegisterUser(email, password, passwordConfirmation);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2393,7 +2394,7 @@ var loginUser = function loginUser(email, password) {
   var req = buildLoginUser(email, password);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2417,7 +2418,7 @@ var requireResetUser = function requireResetUser(email, storeUrl) {
   var req = buildRequireResetUser(email, storeUrl);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 /**
@@ -2443,7 +2444,7 @@ var resetUser = function resetUser(token, email, password, passwordConfirmation)
   var req = buildResetUser(token, email, password, passwordConfirmation);
 
   // Return the execution
-  return executeRequest(req);
+  return executeRequest$1(req);
 };
 
 // SDK version
@@ -2453,7 +2454,7 @@ exports.version = version;
 exports.buildRequest = buildRequest;
 exports.buildAuthentication = buildAuthentication;
 exports.buildParams = buildParams;
-exports.executeRequest = executeRequest;
+exports.executeRequest = executeRequest$1;
 exports.fetch = fetch;
 exports.set = set$1;
 exports.unset = unset;
