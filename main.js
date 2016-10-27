@@ -1,20 +1,30 @@
-/* yebo: YeboSdk */
-/* createElement: document */
-/* getElementById: document */
+/* global yebo document */
+
+/* --------------- Pure --------------- */
 const storeName = 'demo'
+const prop = name => object => object[name]
+const head = arr => arr[0]
+/* --------------- Kinda --------------- */
+const tail = arr => arr.slice(1);
+const clickEvent = cb => el => cb(el.currentTarget.getAttribute("variantId"))
+const map = cb => arr => arr.map(x => cb(x))
+/* --------------- Pure --------------- */
 
-// Set Store Name
-yebo.set('store', storeName)
 
-const state = {
-  orderToken: null,
-  orderNumber: null,
-  userToken: null,
-  authToken: null
+
+/* --------------- Inpure --------------- */
+
+
+// Event dispacher
+const addCartEvent = (state, setState) => {
+  return variantId => {
+    yebo.addCartItems(state.orderToken, state.orderNumber, false, true, state.userToken, variantId, 1)
+      .then(setState)
+      .then(getAuthToken)
+      .then(listPayments)
+  }
 }
 
-// ===============
-// ===============
 const setState = (newState) => {
   if (newState.order != undefined) {
     state.orderToken = newState.order.token
@@ -23,15 +33,6 @@ const setState = (newState) => {
     state.userToken = newState.user.token
   }
   return state
-}
-
-const addCartEvent = (el) => {
-  const variantId = el.currentTarget.getAttribute("variantId")
-
-  yebo.addCartItems(state.orderToken, state.orderNumber, false, true, state.userToken, variantId, 1)
-    .then(setState)
-    .then(getAuthToken)
-    .then(listPayments)
 }
 
 const getAuthToken = (state) => {
@@ -49,34 +50,38 @@ const listPayments = (state) => {
   })
 }
 
-const newProductElement = (product) => {
-  const newDiv = document.createElement("div")
+// document
+const mainDiv = document.getElementById('main')
 
-  const btn = document.createElement("button")
-  btn.innerText = product.name
-  btn.setAttribute('variantId', product.variants_including_master_ids[0])
-  btn.addEventListener("click", addCartEvent)
+// Set Store Name
+yebo.set('store', storeName)
 
-  newDiv.appendChild(btn)
-
-  return newDiv
+const state = {
+  orderToken: null,
+  orderNumber: null,
+  userToken: null,
+  authToken: null
 }
 
-const createElement = (target) => {
-  return (product) => {
-    target.appendChild(newProductElement(product))
+// this should be the only inpure function
+const newProductEl = (doc, clickEvent) => {
+  return product => {
+    const newElement = doc.createElement("div")
+    const btn = doc.createElement("button")
+    btn.innerText = product.name
+    btn.setAttribute('variantId', head(product.variants_including_master_ids))
+    btn.addEventListener("click", clickEvent)
+
+    newElement.appendChild(btn)
+
+    return newElement
   }
 }
 
-const mainDiv = document.getElementById('main')
-
-// Getting products
 yebo.getProducts({})
-  .then(res => res.products)
-  .then(prods => prods.map(createElement(mainDiv)))
+  .then(prop("products"))
+  .then(xs => xs.map(newProductEl(document, clickEvent(addCartEvent(state, setState)))))
+  .then(xs => xs.map(x => mainDiv.appendChild(x)))
+/* --------------- Inpure --------------- */
 
 
-yebo.loginUser("teste@teste.com", "123123").then(setState)
-
-// window.addEventListener('DOMContentLoaded', function() {
-// })
