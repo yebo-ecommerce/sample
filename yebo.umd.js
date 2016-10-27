@@ -1645,7 +1645,7 @@ var buildRequest = function buildRequest(method, path, data) {
   var headers = {};
 
   // Check if the authentication token is passed
-  if (auth !== undefined) headers['Authentication'] = 'Bearer ' + auth;
+  if (auth !== undefined) headers['Authorization'] = 'Bearer ' + auth;
 
   // Check if a token is passed to be used
   if (token !== undefined) headers['Yebo-Token'] = token;
@@ -1998,7 +1998,7 @@ var updateOrderAddress = function updateOrderAddress(number, userToken, kind) {
  * Same params as `getOrderShipments`
  * @return {Object} Request
  */
-var buildGetOrderShipments = function buildGetOrderShipments(number, userToken, calculate) {
+var buildGetOrderShipments = function buildGetOrderShipments(number, userToken, kind, calculate) {
   // Build the request.
   return buildRequest('POST', '/checkout/shipments/' + number + '/' + kind, { user_token: userToken, calculate: calculate });
 };
@@ -2023,7 +2023,7 @@ var getOrderShipments = function getOrderShipments(number, userToken, calculate)
  * Same params as `setOrderShipment`
  * @return {Object} Request
  */
-var buildSetOrderShipment = function buildSetOrderShipment(number, userToken, pkg, rate) {
+var buildSetOrderShipment = function buildSetOrderShipment(number, userToken, kind, pkg, rate) {
   // Build the request.
   return buildRequest('POST', '/checkout/shipments/' + number + '/' + kind, { user_token: userToken, rate: rate, package: pkg });
 };
