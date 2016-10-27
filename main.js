@@ -16,20 +16,12 @@ const map = cb => arr => arr.map(x => cb(x))
 
 
 // Event dispacher
-const addCartEvent = (sdk) => {
-  return state => {
-    return setState => {
-      return getAuthToken => {
-        return listPayments => {
-          return variantId => {
-            sdk.addCartItems(state.orderToken, state.orderNumber, false, true, state.userToken, variantId, 1)
-              .then(setState(state))
-              .then(getAuthToken(sdk)(setState))
-              .then(listPayments(sdk))
-          }
-        }
-      }
-    }
+const addCartEvent = (sdk, state, setState, getAuthToken, listPayments) => {
+  return variantId => {
+    sdk.addCartItems(state.orderToken, state.orderNumber, false, true, state.userToken, variantId, 1)
+      .then(setState(state))
+      .then(getAuthToken(sdk, setState))
+      .then(listPayments(sdk))
   }
 }
 
@@ -45,15 +37,13 @@ const setState = (state) => {
   }
 }
 
-const getAuthToken = (sdk) => {
-  return setState => {
-    return state => {
-      return sdk.executeRequest(yebo.buildAuthentication()).then(res => {
-        state.authToken = res.token
-        sdk.set('auth', state.authToken)
-        return state
-      })
-    }
+const getAuthToken = (sdk, setState) => {
+  return state => {
+    return sdk.executeRequest(yebo.buildAuthentication()).then(res => {
+      state.authToken = res.token
+      sdk.set('auth', state.authToken)
+      return state
+    })
   }
 
 }
@@ -95,7 +85,7 @@ const newProductEl = (doc, clickEvent) => {
   }
 }
 
-clickBehaviour = addCartEvent(yebo)(state)(setState)(getAuthToken)(listPayments)
+clickBehaviour = addCartEvent(yebo, state, setState, getAuthToken, listPayments)
 
 yebo.getProducts({})
   .then(prop("products"))
