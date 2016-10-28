@@ -185,3 +185,7 @@
     .then(xs => xs.map(x => mainDiv.appendChild(x)))
   /* --------------- Inpure --------------- */
 })()
+
+
+console.log("heloo again")
+
