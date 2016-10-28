@@ -1,0 +1,26 @@
+{
+  "name": "sample-yebo",
+  "version": "1.0.0",
+  "description": "yebo poc",
+  "main": "index.html",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yebo-ecommerce/sample.git"
+  },
+  "keywords": [
+    "yebo"
+  ],
+  "author": "yurifrl@outlook.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yebo-ecommerce/sample/issues"
+  },
+  "homepage": "https://github.com/yebo-ecommerce/sample#readme",
+  "dependencies": {
+    "axios": "^0.14.0",
+    "http-server": "^0.9.0"
+  }
+}

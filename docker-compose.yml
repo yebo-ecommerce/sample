@@ -1,11 +1,15 @@
 version: '2'
 services:
   web:
-    image: python:alpine
+    image: mhart/alpine-node
     ports:
-      - 81:80
+      - 81:8080
     working_dir: /app
-    command: python3 -m http.server 80
+    command: node node_modules/http-server/bin/http-server ./ -p 8080 -a 0.0.0.0
     volumes:
       - ./:/app
+      - node_modules:/app/node_modules
 
+volumes:
+  node_modules:
+    driver: local
