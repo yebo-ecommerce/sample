@@ -23,7 +23,6 @@
           .then(resources["listOrderShipments"](sdk))
           .then(resources["setOrderShipment"](sdk))
           .then(resources["listOrderPayments"](sdk))
-          .then(resources["setOrderPayment"](sdk))
           .then(resources["pay"](sdk))
       })
     }
@@ -52,9 +51,9 @@
         return state
       })
     }
-
   }
 
+  // Create element with state in the click action
   const createAddress = function(sdk) {
     return state => {
       const options = {
@@ -115,9 +114,9 @@
     }
   }
 
-  const setOrderPayment = function(sdk) {
+  const pay = function(sdk) {
     return state => {
-      var options = {
+      const options = {
         user_token: state.userToken,
         method_id: state.payment.id,
         source: {
@@ -132,24 +131,7 @@
       };
 
       const req = sdk.buildRequest('POST', `/checkout/${state.orderNumber}/payments`, options);
-      return sdk.executeRequest(req).then(res => {
-        return state
-      })
-    }
-  }
-
-  const pay = function(sdk) {
-    return state => {
-      const options = {
-        user_token: state.userToken,
-        subscription: false
-      }
-
-      const req = sdk.buildRequest('POST', `/checkout/${state.orderNumber}/payments`, options);
-      return sdk.executeRequest(req).then(res => {
-        debugger
-        return state
-      })
+      return sdk.executeRequest(req).then(console.log).catch(console.log)
     }
   }
 
@@ -158,8 +140,8 @@
 
   // Set Store Name
   yebo.set('store', storeName)
-  yebo.set('apiURL', 'lvh.me/api')
-  yebo.set('protocol', 'http')
+  // yebo.set('apiURL', 'lvh.me/api')
+  // yebo.set('protocol', 'http')
 
   const state = {
     orderToken: null,
@@ -176,8 +158,7 @@
       const newElement = doc.createElement("div")
       const btn = doc.createElement("button")
       btn.innerText = product.name
-      btn.setAttribute('variantId', head(product.variants_including_master_ids))
-      btn.addEventListener("click", clickEvent)
+      btn.addEventListener("click", clickEvent(head(product.variants_including_master_ids)))
 
       newElement.appendChild(btn)
 
@@ -185,7 +166,7 @@
     }
   }
 
-  const clickEvent = cb => el => cb(el.currentTarget.getAttribute("variantId"))
+  const clickEvent = cb => variantId => eventFired => cb(variantId)
 
   const clickBehaviour = addCartEvent(state, yebo, {
     'loginUser': loginUser,
@@ -195,7 +176,6 @@
     'listOrderShipments': listOrderShipments,
     'setOrderShipment': setOrderShipment,
     'listOrderPayments': listOrderPayments,
-    'setOrderPayment': setOrderPayment,
     'pay': pay
   })
 
