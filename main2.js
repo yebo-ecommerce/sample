@@ -58,18 +58,31 @@
     return state => {
       const options = {
         user_token: state.userToken,
-        firstname: "...",
-        lastname: "...",
-        address1: "...",
-        address2: "...",
-        city: "....",
-        zipcode: "08773000",
-        phone: "...",
-        state_name: null,
-        alternative_phone: null,
-        company: null,
-        state_id: 26,
-        country_id: 28
+        pj: "0",
+        firstname: "Yuri",
+        lastname: "Freire",
+        sex: "m",
+        rg: "477437989",
+        cpf: "004.121.668-79",
+        birth_date: "03/02/1951",
+        company: "",
+        fictitious_name: "",
+        cnpj: "",
+        ie: "",
+        im: "",
+        zipcode: "08615530",
+        address1: "Avenida Pedro Machado",
+        street_number: " 90 d",
+        neighborhood: "Mogi Moderno",
+        address2: "",
+        city: "Mogi das Cruzes",
+        country_id: "61",
+        state_id: "26",
+        ddd_phone: "11",
+        phone: "121221",
+        ddd_alternative_phone: "1112121",
+        alternative_phone: "12121",
+        order_id: "R682793887"
       }
 
       const kind = 'bill'
@@ -84,7 +97,7 @@
     return state => {
       const req = sdk.buildRequest('GET', `/checkout/${state.orderNumber}/shipments`, { user_token: state.userToken });
       return sdk.executeRequest(req).then(res => {
-        state.shipment = head(res.shipments)
+        state.shipment = tail(res.shipments)
         return state
       })
     }
@@ -108,7 +121,7 @@
   const listOrderPayments = function(sdk) {
     return state => {
       return sdk.getOrderPayments(state.orderNumber, state.userToken, false).then(res => {
-        state.payment = head(res.payments.filter(x => x.id === 1))
+        state.payment = head(res.payments.filter(x => x.id === 6))
         return state
       })
     }
